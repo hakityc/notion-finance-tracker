@@ -1,0 +1,28 @@
+name: Notion Sync
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # 每 5 分钟运行一次
+  workflow_dispatch:  # 允许手动运行
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛠️ 检出代码
+        uses: actions/checkout@v3
+
+      - name: 📦 安装 Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 📥 安装依赖
+        run: npm install
+
+      - name: 🔄 运行同步脚本
+        run: node scripts/syncTransactions.js
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          A_TABLE_ID: ${{ secrets.A_TABLE_ID }}
+          B_TABLE_ID: ${{ secrets.B_TABLE_ID }}
